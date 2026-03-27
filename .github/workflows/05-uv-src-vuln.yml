@@ -1,0 +1,28 @@
+name: "05 · uv · src/ · pip-audit vuln"
+# Expected: FAIL — pip-audit finds fixable CVE in requests==2.25.0
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.3.1
+
+      - name: Generate uv.lock
+        working-directory: 05-uv-src-vuln
+        run: uv lock
+
+      - name: Run security audit
+        uses: lhoupert/action-python-security-auditing@78fde899ecb5148e5e3343d534e5bf6bd4e7b035 # v0.2.0
+        with:
+          working_directory: 05-uv-src-vuln
+          package_manager: uv
+          bandit_scan_dirs: src/
+          bandit_severity_threshold: high
+          pip_audit_block_on: fixable
+          post_pr_comment: ${{ github.event_name == 'pull_request' }}

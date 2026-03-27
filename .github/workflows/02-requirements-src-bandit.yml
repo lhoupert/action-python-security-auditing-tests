@@ -1,0 +1,23 @@
+name: "02 · requirements · src/ · bandit HIGH"
+# Expected: FAIL — B602 (shell=True, HIGH) and B105 (hardcoded pw, MEDIUM) in src/
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run security audit
+        uses: lhoupert/action-python-security-auditing@78fde899ecb5148e5e3343d534e5bf6bd4e7b035 # v0.2.0
+        with:
+          working_directory: 02-requirements-src-bandit
+          package_manager: requirements
+          requirements_file: requirements.txt
+          bandit_scan_dirs: src/
+          bandit_severity_threshold: high
+          pip_audit_block_on: fixable
+          post_pr_comment: ${{ github.event_name == 'pull_request' }}

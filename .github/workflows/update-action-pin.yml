@@ -9,10 +9,7 @@ permissions: {}
 jobs:
   update-pin:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      workflows: write
+    permissions: {}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
@@ -27,7 +24,7 @@ jobs:
 
       - name: Open PR
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.TESTS_REPO_DISPATCH_TOKEN }}
           NEW_TAG: ${{ github.event.client_payload.tag }}
         run: |
           git config user.name "github-actions[bot]"
@@ -37,7 +34,7 @@ jobs:
           git add .github/workflows/*.yml
           git diff --cached --quiet && echo "No changes, skipping PR" && exit 0
           git commit -m "chore: update action pin to ${NEW_TAG}"
-          git push origin "$BRANCH"
+          git push https://x-access-token:${{ secrets.TESTS_REPO_DISPATCH_TOKEN }}@github.com/${{ github.repository }} "$BRANCH"
           gh pr create \
             --title "chore: update action pin to ${NEW_TAG}" \
             --body "Automated update of \`lhoupert/action-python-security-auditing\` pin to ${NEW_TAG}." \

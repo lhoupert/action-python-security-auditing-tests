@@ -18,7 +18,7 @@ jobs:
         run: uv lock
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@78fde899ecb5148e5e3343d534e5bf6bd4e7b035 # v0.2.0
+        uses: lhoupert/action-python-security-auditing@2d95cbc2fed7ee39258437927fb78a89f84e4db2 # v0.2.0
         with:
           working_directory: 05-uv-src-vuln
           package_manager: uv

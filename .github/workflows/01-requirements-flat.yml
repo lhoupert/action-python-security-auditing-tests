@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@2d95cbc2fed7ee39258437927fb78a89f84e4db2 # v0.2.0
+        uses: lhoupert/action-python-security-auditing@6fc9a707a040284c5bce28f0c49690f03b43a2c7 # v0.3.1
         with:
           working_directory: 01-requirements-flat
           package_manager: requirements

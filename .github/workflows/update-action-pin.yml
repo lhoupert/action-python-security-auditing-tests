@@ -1,0 +1,44 @@
+name: Update action pin on release
+
+on:
+  repository_dispatch:
+    types: [action-release]
+
+permissions: {}
+
+jobs:
+  update-pin:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Update SHA pins in all workflow files
+        env:
+          NEW_SHA: ${{ github.event.client_payload.sha }}
+          NEW_TAG: ${{ github.event.client_payload.tag }}
+        run: |
+          sed -i -E \
+            "s|lhoupert/action-python-security-auditing@[a-f0-9]+ # v[^ ]*|lhoupert/action-python-security-auditing@${NEW_SHA} # ${NEW_TAG}|g" \
+            .github/workflows/*.yml
+
+      - name: Open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEW_TAG: ${{ github.event.client_payload.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="chore/update-action-${NEW_TAG}"
+          git checkout -b "$BRANCH"
+          git add .github/workflows/*.yml
+          git diff --cached --quiet && echo "No changes, skipping PR" && exit 0
+          git commit -m "chore: update action pin to ${NEW_TAG}"
+          git push origin "$BRANCH"
+          gh pr create \
+            --title "chore: update action pin to ${NEW_TAG}" \
+            --body "Automated update of \`lhoupert/action-python-security-auditing\` pin to ${NEW_TAG}." \
+            --base main \
+            --head "$BRANCH"

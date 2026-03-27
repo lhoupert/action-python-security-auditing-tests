@@ -1,0 +1,22 @@
+name: "14 · uv · flat · low threshold (B101 assert)"
+# Expected: FAIL — B101 assert usage blocked at low threshold
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run security audit
+        uses: lhoupert/action-python-security-auditing@6fc9a707a040284c5bce28f0c49690f03b43a2c7 # v0.3.1
+        with:
+          working_directory: 14-uv-low-threshold
+          package_manager: uv
+          tools: bandit
+          bandit_scan_dirs: .
+          bandit_severity_threshold: low
+          post_pr_comment: ${{ github.event_name == 'pull_request' }}

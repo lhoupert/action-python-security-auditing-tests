@@ -246,6 +246,12 @@ def main() -> int:
         pip_audit_path = artifact_dir / "pip-audit-report.json"
         if pip_audit_path.exists():
             pip_audit_findings = parse_pip_audit(pip_audit_path)
+        else:
+            # Artifact upload uses least common ancestor, so the file may be nested
+            # e.g. artifacts/security-audit-08/08-poetry-src-both/pip-audit-report.json
+            nested = next(artifact_dir.rglob("pip-audit-report.json"), None)
+            if nested:
+                pip_audit_findings = parse_pip_audit(nested)
 
         all_bandit[num] = bandit_findings
         all_pip_audit[num] = pip_audit_findings

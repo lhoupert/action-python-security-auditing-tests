@@ -37,7 +37,7 @@ tests:
     pip_audit_findings:
       - package: requests
         has_fix: true
-      - package: Pillow
+      - package: cryptography
         has_fix: true
 
   "04":

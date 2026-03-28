@@ -15,10 +15,12 @@ def _sarif_doc(results: list[dict]) -> dict:
 @pytest.fixture()
 def sample_sarif() -> dict:
     """Minimal SARIF document with two findings."""
-    return _sarif_doc([
-        {"ruleId": "B602", "level": "error"},
-        {"ruleId": "B105", "level": "warning"},
-    ])
+    return _sarif_doc(
+        [
+            {"ruleId": "B602", "level": "error"},
+            {"ruleId": "B105", "level": "warning"},
+        ]
+    )
 
 
 @pytest.fixture()

@@ -14,9 +14,8 @@ import json
 from pathlib import Path
 
 import pytest
-import yaml
-
 import validate_results as vr
+import yaml
 
 # ---------------------------------------------------------------------------
 # parse_sarif
@@ -159,7 +158,9 @@ class TestValidateTest:
             "pip_audit_findings": [],
         }
 
-        errors = vr.validate_test("02", expected, "failure", bandit_findings=[], pip_audit_findings=[])
+        errors = vr.validate_test(
+            "02", expected, "failure", bandit_findings=[], pip_audit_findings=[]
+        )
 
         assert any("B602" in e for e in errors)
 

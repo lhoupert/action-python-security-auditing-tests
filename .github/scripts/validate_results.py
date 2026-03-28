@@ -136,6 +136,10 @@ def validate_test(
 # ---------------------------------------------------------------------------
 
 
+# Unique marker so the workflow can find & update this comment
+COMMENT_MARKER = "<!-- integration-test-validation-report -->"
+
+
 def generate_report(
     expected_results: dict,
     conclusions: dict[str, str],
@@ -144,7 +148,7 @@ def generate_report(
     all_errors: dict[str, list[str]],
 ) -> str:
     """Generate a markdown report summarising validation results."""
-    lines: list[str] = []
+    lines: list[str] = [COMMENT_MARKER, ""]
     total_pass = sum(1 for errs in all_errors.values() if not errs)
     total_fail = sum(1 for errs in all_errors.values() if errs)
     total_missing = EXPECTED_COUNT - len(conclusions)
@@ -242,6 +246,12 @@ def main() -> int:
         pip_audit_path = artifact_dir / "pip-audit-report.json"
         if pip_audit_path.exists():
             pip_audit_findings = parse_pip_audit(pip_audit_path)
+        else:
+            # Artifact upload uses least common ancestor, so the file may be nested
+            # e.g. artifacts/security-audit-08/08-poetry-src-both/pip-audit-report.json
+            nested = next(artifact_dir.rglob("pip-audit-report.json"), None)
+            if nested:
+                pip_audit_findings = parse_pip_audit(nested)
 
         all_bandit[num] = bandit_findings
         all_pip_audit[num] = pip_audit_findings

@@ -56,7 +56,7 @@ tests:
     bandit_findings:
       - rule_id: B506
         level: warning
-      - rule_id: B303
+      - rule_id: B324
         level: warning
     pip_audit_findings: []
 
@@ -70,7 +70,7 @@ tests:
     name: "poetry · src/ · bandit MEDIUM + pip-audit"
     expected_conclusion: failure
     bandit_findings:
-      - rule_id: B303
+      - rule_id: B324
         level: warning
       - rule_id: B105
         level: warning

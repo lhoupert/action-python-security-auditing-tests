@@ -16,9 +16,13 @@ Dummy Python projects for testing the reliability of [action-python-security-aud
 | 08 | `08-poetry-src-both` | poetry | src/ | FAIL — bandit MEDIUM + pip-audit |
 | 09 | `09-pipenv-flat` | pipenv | flat | PASS — no issues |
 | 10 | `10-pipenv-multi-bandit` | pipenv | src/ + scripts/ | FAIL — bandit HIGH (B602) |
+| 11 | `11-requirements-root` | requirements | flat | PASS — no issues (default working dir `.`) |
+| 12 | `12-uv-flat-bandit-only` | uv | flat | FAIL — bandit HIGH (B602), pip-audit disabled |
+| 13 | `13-requirements-unfixable` | requirements | flat | PASS — unfixable vulns present, `pip_audit_block_on: fixable` does not block |
+| 14 | `14-uv-low-threshold` | uv | flat | FAIL — bandit LOW (B101), pip-audit disabled |
 
 ## How it works
 
 Each project has a corresponding workflow file in `.github/workflows/`. Workflows call the action with `working_directory` set to the project subdirectory, so all package manager commands and bandit paths resolve correctly relative to the project root.
 
-For uv, poetry, and pipenv projects, a setup step generates the lock file in CI before the action runs (lock files are not committed).
+For uv, poetry, and pipenv projects that use pip-audit, a setup step generates the lock file in CI before the action runs (lock files are not committed). Bandit-only tests (12, 14) skip this step.

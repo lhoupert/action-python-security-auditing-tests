@@ -2,8 +2,7 @@ name: "02 · requirements · src/ · bandit HIGH"
 # Expected: FAIL — B602 (shell=True, HIGH) and B105 (hardcoded pw, MEDIUM) in src/
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   security-audit:
@@ -26,3 +25,4 @@ jobs:
           bandit_severity_threshold: high
           pip_audit_block_on: fixable
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
+          artifact_name: security-audit-02

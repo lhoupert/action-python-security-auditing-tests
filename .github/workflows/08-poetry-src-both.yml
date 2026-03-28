@@ -2,8 +2,7 @@ name: "08 · poetry · src/ · bandit MEDIUM + pip-audit"
 # Expected: FAIL — B303+B105 in src/ (MEDIUM threshold), AND vulnerable deps (cryptography, requests)
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   security-audit:
@@ -30,4 +29,5 @@ jobs:
           bandit_scan_dirs: src/
           bandit_severity_threshold: medium
           pip_audit_block_on: all
-          post_pr_comment: ${{ github.event_name == 'pull_request' }}
+          post_pr_comment: ${{ github.event_name == 'pull_request' }} # post_pr_comment: false # Disable PR comments for testing purposes; set to true to enable
+          artifact_name: security-audit-08

@@ -2,8 +2,7 @@ name: "12 · uv · flat · bandit-only (no pip-audit)"
 # Expected: FAIL — B602 subprocess call with shell=True
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   security-audit:
@@ -24,3 +23,4 @@ jobs:
           bandit_scan_dirs: .
           bandit_severity_threshold: high
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
+          artifact_name: security-audit-12

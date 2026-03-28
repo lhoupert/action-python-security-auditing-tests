@@ -2,8 +2,7 @@ name: "11 · requirements · flat · clean (root working dir)"
 # Expected: PASS — no bandit issues, no vulnerable deps, default working_directory
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   security-audit:
@@ -25,3 +24,4 @@ jobs:
           bandit_severity_threshold: high
           pip_audit_block_on: fixable
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
+          artifact_name: security-audit-11

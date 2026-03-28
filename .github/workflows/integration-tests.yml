@@ -1,0 +1,160 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: integration-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ── Test workflows (reusable) ──────────────────────────────────
+  test-01:
+    uses: ./.github/workflows/01-requirements-flat.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-02:
+    uses: ./.github/workflows/02-requirements-src-bandit.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-03:
+    uses: ./.github/workflows/03-requirements-multi-both.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-04:
+    uses: ./.github/workflows/04-uv-flat.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-05:
+    uses: ./.github/workflows/05-uv-src-vuln.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-06:
+    uses: ./.github/workflows/06-uv-multi-bandit.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-07:
+    uses: ./.github/workflows/07-poetry-flat.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-08:
+    uses: ./.github/workflows/08-poetry-src-both.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-09:
+    uses: ./.github/workflows/09-pipenv-flat.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-10:
+    uses: ./.github/workflows/10-pipenv-multi-bandit.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-11:
+    uses: ./.github/workflows/11-requirements-root.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-12:
+    uses: ./.github/workflows/12-uv-flat-bandit-only.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-13:
+    uses: ./.github/workflows/13-requirements-unfixable.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  test-14:
+    uses: ./.github/workflows/14-uv-low-threshold.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  # ── Validate results (only on PRs, after all tests) ────────────
+  validate:
+    if: always() && github.event_name == 'pull_request'
+    needs:
+      - test-01
+      - test-02
+      - test-03
+      - test-04
+      - test-05
+      - test-06
+      - test-07
+      - test-08
+      - test-09
+      - test-10
+      - test-11
+      - test-12
+      - test-13
+      - test-14
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: security-audit-*
+          path: artifacts
+
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Validate test outcomes
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: python .github/scripts/validate_results.py
+
+      - name: Post PR comment
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f validation-report.md ]; then
+            echo "No report generated" >&2
+            exit 0
+          fi
+          # Try to update an existing comment, otherwise create a new one
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body-file validation-report.md \
+            --edit-last 2>/dev/null || \
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --body-file validation-report.md

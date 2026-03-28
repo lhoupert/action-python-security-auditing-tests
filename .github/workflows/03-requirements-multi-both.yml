@@ -2,8 +2,7 @@ name: "03 · requirements · src/+scripts/ · bandit+pip-audit"
 # Expected: FAIL — B602 in src/, B105 in scripts/, AND vulnerable deps (requests, Pillow)
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   security-audit:
@@ -26,3 +25,4 @@ jobs:
           bandit_severity_threshold: high
           pip_audit_block_on: fixable
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
+          artifact_name: security-audit-03

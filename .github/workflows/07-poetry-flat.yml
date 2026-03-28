@@ -2,8 +2,7 @@ name: "07 · poetry · flat · clean"
 # Expected: PASS — no bandit issues, no vulnerable deps
 
 on:
-  push:
-  pull_request:
+  workflow_call:
 
 jobs:
   security-audit:
@@ -31,3 +30,4 @@ jobs:
           bandit_severity_threshold: high
           pip_audit_block_on: fixable
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
+          artifact_name: security-audit-07

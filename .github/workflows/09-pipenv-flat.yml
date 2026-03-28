@@ -27,7 +27,7 @@ jobs:
         run: pipenv install
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@674cb7133ca058d128f654c427add27f8a1df83b # v0.4.2
+        uses: lhoupert/action-python-security-auditing@6791db45b1aea51db705d38978ad62b855b34b32 # v0.4.3
         with:
           working_directory: 09-pipenv-flat
           package_manager: pipenv

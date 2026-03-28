@@ -10,6 +10,7 @@
 - pip-audit detects the fixable CVE-2023-32681 in `requests==2.25.0`
 - Bandit finds no issues in clean code
 - Workflow fails due to pip-audit finding a fixable vulnerability
+- `uv.lock` is **committed** — required so pip-audit reliably resolves the pinned vulnerable version
 
 ## Intentional issues
 

@@ -91,6 +91,7 @@ def validate_test(
     # --- Bandit findings ---
     expected_bandit = expected.get("bandit_findings", [])
     actual_rule_ids = {f["rule_id"] for f in bandit_findings}
+    expected_rule_ids = {e["rule_id"] for e in expected_bandit}
 
     if not expected_bandit and bandit_findings:
         errors.append(
@@ -100,6 +101,12 @@ def validate_test(
     for exp in expected_bandit:
         if exp["rule_id"] not in actual_rule_ids:
             errors.append(f"Bandit: expected {exp['rule_id']} not found in results")
+    if expected_bandit:
+        unexpected = sorted(actual_rule_ids - expected_rule_ids)
+        if unexpected:
+            errors.append(
+                f"Bandit: unexpected finding(s) not in expected set: {', '.join(unexpected)}"
+            )
 
     # --- pip-audit findings ---
     pip_audit_disabled = expected.get("pip_audit_disabled", False)

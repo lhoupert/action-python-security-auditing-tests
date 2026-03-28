@@ -23,5 +23,6 @@ jobs:
           bandit_scan_dirs: 11-requirements-root
           bandit_severity_threshold: high
           pip_audit_block_on: fixable
+          debug: 'true'
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
           artifact_name: security-audit-11

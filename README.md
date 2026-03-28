@@ -11,7 +11,7 @@ Dummy Python projects for testing the reliability of [action-python-security-aud
 | 03 | `03-requirements-multi-both` | requirements | src/ + scripts/ | FAIL — bandit HIGH + pip-audit |
 | 04 | `04-uv-flat` | uv | flat | PASS — no issues |
 | 05 | `05-uv-src-vuln` | uv | src/ | FAIL — pip-audit (fixable CVEs) |
-| 06 | `06-uv-multi-bandit` | uv | src/ + scripts/ | FAIL — bandit MEDIUM (B303, B506) |
+| 06 | `06-uv-multi-bandit` | uv | src/ + scripts/ | FAIL — bandit MEDIUM (B324, B506) |
 | 07 | `07-poetry-flat` | poetry | flat | PASS — no issues |
 | 08 | `08-poetry-src-both` | poetry | src/ | FAIL — bandit MEDIUM + pip-audit |
 | 09 | `09-pipenv-flat` | pipenv | flat | PASS — no issues |
@@ -25,4 +25,8 @@ Dummy Python projects for testing the reliability of [action-python-security-aud
 
 Each project has a corresponding workflow file in `.github/workflows/`. Workflows call the action with `working_directory` set to the project subdirectory, so all package manager commands and bandit paths resolve correctly relative to the project root.
 
-For uv, poetry, and pipenv projects that use pip-audit, a setup step generates the lock file in CI before the action runs (lock files are not committed). Bandit-only tests (12, 14) skip this step.
+For uv, poetry, and pipenv projects, lockfiles are **selectively committed** to test both code paths:
+- **With lockfile**: tests 05 (`uv.lock`), 06 (`uv.lock`), 08 (`poetry.lock`), 09 (`Pipfile.lock`) — required for reliable pip-audit detection of pinned vulnerable versions, or to verify the action handles pre-existing lockfiles correctly.
+- **Without lockfile**: tests 04 (uv), 07 (poetry), 10 (pipenv) — tests the action's behaviour when no lockfile is present in the repository. Bandit-only tests 12 and 14 never need a lockfile.
+
+Requirements-based tests (01, 02, 03, 11, 13) always have `requirements.txt` committed — no lockfile concept applies.

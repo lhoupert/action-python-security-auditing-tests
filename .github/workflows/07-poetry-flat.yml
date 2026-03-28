@@ -15,12 +15,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: snok/install-poetry@76e04a911780d5b312d89783f7b1cd627778900a # v1.4.1
-
-      - name: Generate poetry.lock
-        working-directory: 07-poetry-flat
-        run: poetry lock
-
       - name: Run security audit
         uses: lhoupert/action-python-security-auditing@6791db45b1aea51db705d38978ad62b855b34b32 # v0.4.3
         with:

@@ -143,7 +143,7 @@ jobs:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: python .github/scripts/validate_results.py
 
-      - name: Post PR comment
+      - name: Post or update PR comment
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
@@ -152,9 +152,26 @@ jobs:
             echo "No report generated" >&2
             exit 0
           fi
-          # Try to update an existing comment, otherwise create a new one
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --body-file validation-report.md \
-            --edit-last 2>/dev/null || \
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --body-file validation-report.md
+
+          MARKER="<!-- integration-test-validation-report -->"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+
+          # Find existing comment with our marker
+          COMMENT_ID=$(
+            gh api \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              --paginate -q \
+              ".[] | select(.body | contains(\"${MARKER}\")) | .id" \
+            | head -n 1
+          )
+
+          if [ -n "$COMMENT_ID" ]; then
+            gh api \
+              "repos/${{ github.repository }}/issues/comments/${COMMENT_ID}" \
+              --method PATCH \
+              -F "body=@validation-report.md"
+            echo "Updated existing comment ${COMMENT_ID}"
+          else
+            gh pr comment "${PR_NUMBER}" --body-file validation-report.md
+            echo "Created new comment"
+          fi

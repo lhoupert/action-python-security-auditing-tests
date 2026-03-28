@@ -23,7 +23,7 @@ jobs:
         run: poetry lock
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@a3e6db325d9cf515d3861620774671bc01b12d63 # v0.3.2
+        uses: lhoupert/action-python-security-auditing@db595e9725be5429332e11b7edff7aa6769d5e46 # v0.4.1
         with:
           working_directory: 07-poetry-flat
           package_manager: poetry

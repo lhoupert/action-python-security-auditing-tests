@@ -1,0 +1,11 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.2
+    hooks:
+      # Lint (and auto-fix) only our own code; never touch the 01-14 test fixtures
+      - id: ruff
+        args: [--fix]
+        files: ^(\.github/scripts|tests)/
+      # Format
+      - id: ruff-format
+        files: ^(\.github/scripts|tests)/

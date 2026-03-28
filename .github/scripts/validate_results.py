@@ -37,10 +37,12 @@ def parse_sarif(path: Path) -> list[dict]:
     results = []
     for run in sarif.get("runs", []):
         for result in run.get("results", []):
-            results.append({
-                "rule_id": result.get("ruleId", ""),
-                "level": result.get("level", ""),
-            })
+            results.append(
+                {
+                    "rule_id": result.get("ruleId", ""),
+                    "level": result.get("level", ""),
+                }
+            )
     return results
 
 
@@ -52,11 +54,13 @@ def parse_pip_audit(path: Path) -> list[dict]:
         if "skip_reason" in dep:
             continue
         for vuln in dep.get("vulns", []):
-            findings.append({
-                "package": dep["name"],
-                "vuln_id": vuln.get("id", ""),
-                "has_fix": len(vuln.get("fix_versions", [])) > 0,
-            })
+            findings.append(
+                {
+                    "package": dep["name"],
+                    "vuln_id": vuln.get("id", ""),
+                    "has_fix": len(vuln.get("fix_versions", [])) > 0,
+                }
+            )
     return findings
 
 
@@ -82,9 +86,7 @@ def validate_test(
 
     expected_conclusion = expected["expected_conclusion"]
     if conclusion != expected_conclusion:
-        errors.append(
-            f"Conclusion: expected {expected_conclusion}, got {conclusion}"
-        )
+        errors.append(f"Conclusion: expected {expected_conclusion}, got {conclusion}")
 
     # --- Bandit findings ---
     expected_bandit = expected.get("bandit_findings", [])
@@ -208,8 +210,7 @@ def main() -> int:
     tests = expected_results["tests"]
     if len(tests) != EXPECTED_COUNT:
         print(
-            f"ERROR: expected_results.yml has {len(tests)} tests, "
-            f"expected {EXPECTED_COUNT}",
+            f"ERROR: expected_results.yml has {len(tests)} tests, expected {EXPECTED_COUNT}",
             file=sys.stderr,
         )
         return 1
@@ -255,9 +256,7 @@ def main() -> int:
             print(f"         {err}")
 
     # Generate report
-    report = generate_report(
-        expected_results, conclusions, all_bandit, all_pip_audit, all_errors
-    )
+    report = generate_report(expected_results, conclusions, all_bandit, all_pip_audit, all_errors)
 
     # Write report to file for PR comment step
     report_path = Path("validation-report.md")

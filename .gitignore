@@ -1,3 +1,20 @@
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+
+# uv
+# uv.lock is intentionally committed for reproducible installs.
+# See: https://docs.astral.sh/uv/concepts/projects/layout/#the-lockfile
+
+# Test & lint caches
+.pytest_cache/
+.ruff_cache/
+
+# Generated CI artifacts (downloaded locally during development)
+artifacts/
+validation-report.md

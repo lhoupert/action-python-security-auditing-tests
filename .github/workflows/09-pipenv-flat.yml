@@ -15,19 +15,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
         with:
           python-version: '3.12'
 
       - name: Install pipenv
-        run: pip install pipenv
-
-      - name: Generate Pipfile.lock
-        working-directory: 09-pipenv-flat
-        run: pipenv install
+        run: pip install pipenv==2024.4.0
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@6791db45b1aea51db705d38978ad62b855b34b32 # v0.4.3
+        uses: lhoupert/action-python-security-auditing@1791bce99627a60fd1a0985c0e8a6169ffc19005 # fix--add-additional-tests-pip-audit
         with:
           working_directory: 09-pipenv-flat
           package_manager: pipenv

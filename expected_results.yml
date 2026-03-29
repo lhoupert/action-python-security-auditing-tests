@@ -20,6 +20,8 @@ tests:
         level: error
       - rule_id: B105
         level: warning
+      - rule_id: B404
+        level: note
     pip_audit_findings: []
 
   "03":
@@ -30,10 +32,12 @@ tests:
         level: error
       - rule_id: B105
         level: warning
+      - rule_id: B404
+        level: note
     pip_audit_findings:
       - package: requests
         has_fix: true
-      - package: Pillow
+      - package: cryptography
         has_fix: true
 
   "04":
@@ -92,6 +96,8 @@ tests:
     bandit_findings:
       - rule_id: B602
         level: error
+      - rule_id: B404
+        level: note
     pip_audit_findings: []
 
   "11":
@@ -107,6 +113,8 @@ tests:
     bandit_findings:
       - rule_id: B602
         level: error
+      - rule_id: B404
+        level: note
     pip_audit_findings: []
 
   "13":

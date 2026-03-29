@@ -8,8 +8,8 @@
 
 - Bandit scans two directories via `bandit_scan_dirs: src/,scripts/`
 - B602 (`subprocess.call(shell=True)`) in both directories triggers HIGH threshold
-- `pipenv requirements` correctly exports deps from `Pipfile.lock`
 - Clean deps ensure only bandit fails the job
+- `Pipfile.lock` is **not committed** — tests the action's behaviour when no lockfile is present
 
 ## Intentional issues
 

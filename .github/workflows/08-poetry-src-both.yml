@@ -15,19 +15,19 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: snok/install-poetry@76e04a911780d5b312d89783f7b1cd627778900a # v1.4.1
-
-      - name: Generate poetry.lock
-        working-directory: 08-poetry-src-both
-        run: poetry lock
+      - name: Install Poetry
+        uses: snok/install-poetry@972a0e78ffdebf9e98f6fe404b77831716cdd4aa # v1.4.0
+        with:
+          version: "1.8.5"
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@6791db45b1aea51db705d38978ad62b855b34b32 # v0.4.3
+        uses: lhoupert/action-python-security-auditing@1791bce99627a60fd1a0985c0e8a6169ffc19005 # fix--add-additional-tests-pip-audit
         with:
           working_directory: 08-poetry-src-both
           package_manager: poetry
           bandit_scan_dirs: src/
           bandit_severity_threshold: medium
           pip_audit_block_on: all
-          post_pr_comment: ${{ github.event_name == 'pull_request' }} # post_pr_comment: false # Disable PR comments for testing purposes; set to true to enable
+          debug: 'true'
+          post_pr_comment: ${{ github.event_name == 'pull_request' }}
           artifact_name: security-audit-08

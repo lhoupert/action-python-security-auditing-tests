@@ -172,6 +172,41 @@ class TestValidateTest:
 
         assert any("Bandit" in e for e in errors)
 
+    def test_unexpected_bandit_rule_id_when_expected_is_nonempty_returns_error(self) -> None:
+        # B404 appears in actual but is not in the expected set — must be flagged
+        expected = {
+            "expected_conclusion": "failure",
+            "bandit_findings": [{"rule_id": "B602", "level": "error"}],
+            "pip_audit_findings": [],
+        }
+        bandit = [
+            {"rule_id": "B602", "level": "error"},
+            {"rule_id": "B404", "level": "note"},
+        ]
+
+        errors = vr.validate_test("02", expected, "failure", bandit, [])
+
+        assert any("B404" in e for e in errors)
+        assert any("unexpected" in e.lower() for e in errors)
+
+    def test_all_expected_rules_present_no_extras_returns_no_error(self) -> None:
+        expected = {
+            "expected_conclusion": "failure",
+            "bandit_findings": [
+                {"rule_id": "B602", "level": "error"},
+                {"rule_id": "B404", "level": "note"},
+            ],
+            "pip_audit_findings": [],
+        }
+        bandit = [
+            {"rule_id": "B602", "level": "error"},
+            {"rule_id": "B404", "level": "note"},
+        ]
+
+        errors = vr.validate_test("02", expected, "failure", bandit, [])
+
+        assert errors == []
+
     def test_pip_audit_has_fix_mismatch_returns_error(self) -> None:
         expected = {
             "expected_conclusion": "failure",

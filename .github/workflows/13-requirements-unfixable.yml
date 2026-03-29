@@ -16,7 +16,7 @@ jobs:
           persist-credentials: false
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@6791db45b1aea51db705d38978ad62b855b34b32 # v0.4.3
+        uses: lhoupert/action-python-security-auditing@1791bce99627a60fd1a0985c0e8a6169ffc19005 # fix--add-additional-tests-pip-audit
         with:
           working_directory: 13-requirements-unfixable
           package_manager: requirements
@@ -24,5 +24,6 @@ jobs:
           bandit_scan_dirs: .
           bandit_severity_threshold: high
           pip_audit_block_on: fixable
+          debug: 'true'
           post_pr_comment: ${{ github.event_name == 'pull_request' }}
           artifact_name: security-audit-13

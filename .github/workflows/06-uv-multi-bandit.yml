@@ -16,7 +16,7 @@ jobs:
           persist-credentials: false
 
       - name: Run security audit
-        uses: lhoupert/action-python-security-auditing@6791db45b1aea51db705d38978ad62b855b34b32 # v0.4.3
+        uses: lhoupert/action-python-security-auditing@1791bce99627a60fd1a0985c0e8a6169ffc19005 # fix--add-additional-tests-pip-audit
         with:
           working_directory: 06-uv-multi-bandit
           package_manager: uv

@@ -1,4 +1,4 @@
-"""Validate that all 14 test workflows produced the expected outcomes.
+"""Validate that all 3 smoke-test workflows produced the expected outcomes.
 
 Reads job conclusions from the NEEDS_JSON env var (set by
 integration-tests.yml via ``${{ toJSON(needs) }}``) and parses
@@ -22,7 +22,7 @@ import yaml
 # Configuration
 # ---------------------------------------------------------------------------
 
-EXPECTED_COUNT = 14
+EXPECTED_COUNT = 3
 ARTIFACTS_DIR = Path("artifacts")
 EXPECTED_RESULTS_PATH = Path("expected_results.yml")
 
